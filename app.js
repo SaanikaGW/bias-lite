@@ -6,7 +6,6 @@
  ******************************************************/
 
 // The model will live here after you upload it
-fetch("./bias_model.json")
 let MODEL = null;
 
 // Get page elements
@@ -24,6 +23,22 @@ const modelFile = document.getElementById("modelFile");
 const modelStatus = document.getElementById("modelStatus");
 const modelBadge = document.getElementById("modelBadge");
 
+fetch("./bias_model.json")
+  .then(r => {
+    if (!r.ok) throw new Error("fetch failed");
+    return r.json();
+  })
+  .then(j => {
+    MODEL = j;
+    if (modelStatus) modelStatus.textContent = "Model: loaded ✅";
+    if (modelBadge) { modelBadge.textContent = "Model: loaded"; modelBadge.style.borderColor = "#3a3"; }
+  })
+  .catch(() => {
+    // Fallback for local file:// usage
+    if (modelStatus) modelStatus.textContent = "Model: not loaded (click Upload)";
+    if (loadModelBtn) loadModelBtn.classList.remove("hidden");
+  });
+  
 // ---------------------------
 // 1) MODEL UPLOAD (super simple)
 // ---------------------------
