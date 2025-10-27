@@ -1,0 +1,78 @@
+text,bias_present,gender_target,bias_type
+Women are naturally worse at math than men,1,women,stereotype
+Men are better leaders because they are more decisive,1,men,stereotype
+Girls are too emotional to handle engineering,1,women,stereotype
+Boys shouldn’t cry in public,1,men,stereotype
+The female CEO delivered strong quarterly results,0,women,neutral_reference
+Women are encouraged to apply for this scholarship,0,women,neutral_reference
+The men’s soccer team won the championship,0,men,neutral_reference
+Most nurses are women because they are caring,1,women,stereotype
+She is the first woman to win this science award,0,women,positive_representation
+He chairs the committee on technology policy,0,men,neutral_reference
+It is unusual to see women working in cybersecurity,1,women,underrepresentation
+Men rarely choose early childhood education careers,1,men,underrepresentation
+Women are great at multitasking due to their nature,1,women,stereotype
+He overreacted during the meeting,0,men,non_gendered
+She built the entire app by herself,0,women,non_gendered
+Girls need to calm down and stay quiet in class,1,women,dismissive
+Men don’t belong in dance classes,1,men,exclusion
+The startup hired a diverse technical team,0,none,non_gendered
+Women make lower salaries because they are less ambitious,1,women,stereotype
+This program helps women return to the workforce,0,women,neutral_reference
+He is promoted because he performs well under pressure,0,men,non_gendered
+Women struggle with logic problems,1,women,stereotype
+Men don’t ask for help when they are confused,1,men,stereotype
+She mentors new employees every quarter,0,women,positive_representation
+He studies physics at the university,0,men,non_gendered
+The girls team is advancing to regionals,0,women,neutral_reference
+Men should always pay on dates,1,men,stereotype
+Women should smile more at work,1,women,dismissive
+The female doctor leads the medical research unit,0,women,neutral_reference
+He is a skilled robotics engineer,0,men,non_gendered
+It is strange that a man is teaching kindergarten,1,men,stereotype
+Women gossip too much,1,women,stereotype
+Men dominate boardrooms due to natural competitiveness,1,men,stereotype
+She won the regional programming contest,0,women,positive_representation
+He organizes the school hackathon,0,men,non_gendered
+Companies should hire more women in tech roles,0,women,positive_representation
+Men avoid counseling because they are tough,1,men,stereotype
+Girls who code are changing the future,0,women,positive_representation
+He enjoys fashion design,0,men,neutral_reference
+Women shouldn’t lift heavy equipment,1,women,exclusion
+Men always rush decisions without thinking,1,men,stereotype
+Girls deserve better role models in STEM,0,women,positive_representation
+He is responsible for server maintenance,0,men,non_gendered
+Women can't handle high-pressure leadership jobs,1,women,stereotype
+Men in nursing are unusual,1,men,underrepresentation
+She teaches advanced calculus,0,women,non_gendered
+Inclusive hiring welcomes all genders,0,none,non_gendered
+Women are judged more harshly in politics,1,women,structural_bias
+Men are naturally funnier than women,1,men,stereotype
+She leads the product engineering division,0,women,positive_representation
+He is a competent public speaker,0,men,non_gendered
+Girls only care about popularity,1,women,stereotype
+Men don’t read instructions,1,men,stereotype
+Women dominate HR because they avoid STEM,1,women,stereotype
+He has a caring personality,0,men,non_gendered
+She designed the new campus robotics system,0,women,positive_representation
+Men should not take parental leave,1,men,stereotype
+Women need more support to pursue IT careers,0,women,positive_representation
+He isn’t performing well this semester,0,men,non_gendered
+Girls lack discipline in coding class,1,women,stereotype
+Men rarely ask to be included in projects,1,men,underrepresentation
+She excels at machine learning research,0,women,positive_representation
+He develops the company’s security tools,0,men,non_gendered
+Women should stick to fashion and teaching,1,women,exclusion
+Men aren’t detail-oriented enough for accounting,1,men,stereotype
+She directs the AI research team,0,women,positive_representation
+He analyzes financial data,0,men,non_gendered
+Girls don’t need to learn robotics,1,women,exclusion
+Men are not creative problem solvers,1,men,stereotype
+Women excel in collaboration and communication,0,women,positive_representation
+He participates in the math club,0,men,non_gendered
+Girls are too shy to present projects,1,women,stereotype
+Men handle strategy while women execute tasks,1,both,role_fixation
+She invented a new medical device,0,women,positive_representation
+He won the physics olympiad,0,men,positive_representation
+Girls shouldn’t speak first in discussions,1,women,dismissive
+Men always take credit for women’s ideas,1,men,structural_bias

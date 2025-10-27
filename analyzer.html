@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Bias-Lite Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#0b0b0c; --card:#141417; --ink:#e9e9ee; --muted:#b6b6c2; --accent:#6ee7b7; }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:Inter,system-ui,Segoe UI,Arial; color:var(--ink); background:linear-gradient(180deg,#0b0b0c,#0f1014 40%,#0b0b0c)}
+    .wrap{max-width:980px; margin:28px auto 40px; padding:0 16px}
+    .title{font-size:28px; font-weight:800; margin:0 0 6px}
+    .sub{color:var(--muted); margin:0 0 18px; font-size:14px}
+    .grid{display:grid; grid-template-columns:1fr; gap:16px}
+    @media(min-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+    .card{background:var(--card); border:1px solid #25252b; border-radius:16px; padding:14px}
+    textarea{width:100%; min-height:240px; resize:vertical; background:#0e0f12; color:var(--ink); border:1px solid #2a2a32; border-radius:10px; padding:12px; line-height:1.4}
+    button{background:#2a2f3a; color:#fff; border:1px solid #3a3f4a; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600}
+    button:hover{filter:brightness(1.1)}
+    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .score{font-weight:800; font-size:20px}
+    .bar{height:10px; width:100%; background:#1b1c21; border-radius:999px; overflow:hidden; border:1px solid #2a2a32}
+    .bar > div{height:100%; background:linear-gradient(90deg,#f87171,#f59e0b,#6ee7b7)}
+    mark{background:#fde68a; color:#111827; padding:2px 3px; border-radius:4px}
+    .hit{display:flex; gap:8px; padding:8px; border:1px solid #2a2a32; border-radius:8px; background:#0f1014; margin-bottom:6px}
+    .hint{color:var(--muted); font-size:13px}
+    .muted{color:var(--muted)}
+    .pill{padding:4px 8px; border:1px solid #2a2a32; border-radius:999px; font-size:12px}
+    .footer{color:#9aa0aa; font-size:12px; margin-top:8px}
+    .hidden{display:none}
+    .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="row">
+        <button onclick="location.href='index.html'">← Home</button>
+        <h1 class="title" style="margin-left:8px">Bias-Lite Analyzer</h1>
+      </div>
+      <div class="row">
+        <button id="loadModelBtn">Upload model JSON</button>
+        <input id="modelFile" type="file" accept="application/json" class="hidden" />
+        <span id="modelStatus" class="muted">Model: loading…</span>
+      </div>
+    </div>
+    <p class="sub">Paste text, click Analyze. All detection runs locally in your browser.</p>
+
+    <div class="grid">
+      <div class="card">
+        <textarea id="input" placeholder="Paste any paragraph or sentence here…"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button id="analyzeBtn">Analyze</button>
+          <label class="row muted" style="gap:6px">
+            <input type="checkbox" id="useModel" checked />
+            Use model score
+          </label>
+          <label class="row muted" style="gap:6px">
+            <input type="checkbox" id="useHighlighter" checked />
+            Highlight gendered phrasing
+          </label>
+        </div>
+        <div class="footer">Try: “Women shouldn’t lift heavy equipment.” or “She leads the product engineering division.”</div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="score">Bias probability: <span id="prob">–</span></div>
+          <span class="pill" id="modelBadge">Model: not loaded</span>
+        </div>
+        <div class="bar" style="margin:10px 0 16px"><div id="meter" style="width:0%"></div></div>
+        <div id="preview" style="min-height:140px"></div>
+        <h4 style="margin:18px 0 6px">Suggestions</h4>
+        <div id="suggestions" class="muted">No flags yet.</div>
+      </div>
+    </div>
+
+    <p class="footer">Disclosure: rule-based highlights plus a small TF-IDF + logistic regression model trained on a mixed dataset. All inference is on-device.</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
