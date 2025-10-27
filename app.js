@@ -8,7 +8,7 @@
 // The model will live here after you upload it
 let MODEL = null;
 
-// Get page elements
+// elements
 const inputEl = document.getElementById("input");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const previewEl = document.getElementById("preview");
@@ -17,26 +17,23 @@ const probEl = document.getElementById("prob");
 const meterEl = document.getElementById("meter");
 const useModelEl = document.getElementById("useModel");
 const useHighlighterEl = document.getElementById("useHighlighter");
-
 const loadModelBtn = document.getElementById("loadModelBtn");
 const modelFile = document.getElementById("modelFile");
 const modelStatus = document.getElementById("modelStatus");
 const modelBadge = document.getElementById("modelBadge");
 
+
 fetch("./bias_model.json")
-  .then(r => {
-    if (!r.ok) throw new Error("fetch failed");
-    return r.json();
-  })
-  .then(j => {
-    MODEL = j;
-    if (modelStatus) modelStatus.textContent = "Model: loaded ✅";
-    if (modelBadge) { modelBadge.textContent = "Model: loaded"; modelBadge.style.borderColor = "#3a3"; }
+  .then(res => res.json())
+  .then(model => {
+    MODEL = model;
+    modelStatus.textContent = "Model: loaded";
+    modelBadge.textContent = "Model: loaded";
+    modelBadge.style.borderColor = "#3a3";
   })
   .catch(() => {
-    // Fallback for local file:// usage
-    if (modelStatus) modelStatus.textContent = "Model: not loaded (click Upload)";
-    if (loadModelBtn) loadModelBtn.classList.remove("hidden");
+    modelStatus.textContent = "Model: not loaded (upload instead)";
+    loadModelBtn.classList.remove("hidden");
   });
   
 // ---------------------------
