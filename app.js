@@ -6,6 +6,7 @@
  ******************************************************/
 
 // The model will live here after you upload it
+fetch("./bias_model.json")
 let MODEL = null;
 
 // Get page elements
