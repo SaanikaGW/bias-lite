@@ -1,5 +1,5 @@
 /***** Bias-Lite (auto-load + rewrites + download + before/after + popups) *****/
-
+fetch("./bias_model.json")
 let MODEL = null;
 
 // Elements
