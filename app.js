@@ -1,8 +1,14 @@
-/***** Bias-Lite (auto-load + rewrites + download + before/after + popups) *****/
-fetch("./bias_model.json")
+/******************************************************
+ * Bias-Lite (Simple Version)
+ * - No auto fetch (so you can open index.html by double click)
+ * - Click "Upload model JSON" to load bias_model.json
+ * - Paste text, click Analyze, see highlights + score
+ ******************************************************/
+
+// The model will live here after you upload it
 let MODEL = null;
 
-// Elements
+// elements
 const inputEl = document.getElementById("input");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const previewEl = document.getElementById("preview");
@@ -15,210 +21,185 @@ const loadModelBtn = document.getElementById("loadModelBtn");
 const modelFile = document.getElementById("modelFile");
 const modelStatus = document.getElementById("modelStatus");
 const modelBadge = document.getElementById("modelBadge");
-const rewriteBtn = document.getElementById("rewriteBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const tabOriginal = document.getElementById("tabOriginal");
-const tabImproved = document.getElementById("tabImproved");
 
-// Popups
-const modal = document.getElementById("modal");
-const modalTitle = document.getElementById("modalTitle");
-const modalBody = document.getElementById("modalBody");
-document.getElementById("closeModal").onclick = () => modal.style.display = "none";
-document.getElementById("whatBias").onclick = () => openInfo(
-  "What is gender bias?",
-  `
-  <p>Gender bias is wording that treats people differently based on gender, often by assuming certain traits, roles, or abilities.</p>
-  <p>Examples: “girls are better at helping,” “men are natural leaders,” or using “guys” to mean everyone.</p>
-  `
-);
-document.getElementById("whyLanguage").onclick = () => openInfo(
-  "Why language matters",
-  `
-  <p>Language shapes expectations. Biased wording can influence grades, hiring, and confidence. Small changes make writing fairer and clearer.</p>
-  `
-);
-document.getElementById("examples").onclick = () => openInfo(
-  "Examples to compare",
-  `
-  <p><b>Biased:</b> “The boys led while the girls took notes.”<br/>
-     <b>Improved:</b> “Some team members led discussion while others recorded decisions.”</p>
-  <p><b>Biased:</b> “She’s bossy.” → <b>Improved:</b> “She is assertive in leading discussions.”</p>
-  `
-);
-function openInfo(title, html){ modalTitle.textContent = title; modalBody.innerHTML = html; modal.style.display = "flex"; }
 
-// Auto-load model (works on GitHub Pages)
 fetch("./bias_model.json")
-  .then(r => { if(!r.ok) throw new Error("fetch"); return r.json(); })
-  .then(j => {
-    MODEL = j;
+  .then(res => res.json())
+  .then(model => {
+    MODEL = model;
     modelStatus.textContent = "Model: loaded";
     modelBadge.textContent = "Model: loaded";
     modelBadge.style.borderColor = "#3a3";
   })
   .catch(() => {
-    modelStatus.textContent = "Model: not loaded (click Upload)";
+    modelStatus.textContent = "Model: not loaded (upload instead)";
     loadModelBtn.classList.remove("hidden");
   });
+  
+// ---------------------------
+// 1) MODEL UPLOAD (super simple)
+// ---------------------------
+loadModelBtn.addEventListener("click", function () {
+  modelFile.click();
+});
 
-// Upload fallback (local file://)
-loadModelBtn?.addEventListener("click", () => modelFile.click());
-modelFile?.addEventListener("change", async e => {
-  const f = e.target.files?.[0]; if (!f) return;
+modelFile.addEventListener("change", async function (e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const text = await file.text();
   try {
-    MODEL = JSON.parse(await f.text());
-    modelStatus.textContent = `Model: loaded (${f.name})`;
-    modelBadge.textContent = "Model: loaded";
-    modelBadge.style.borderColor = "#3a3";
-  } catch {
+    MODEL = JSON.parse(text);
+    modelStatus.textContent = "Model: loaded (" + file.name + ")";
+    if (modelBadge) {
+      modelBadge.textContent = "Model: loaded";
+      modelBadge.style.borderColor = "#3a3";
+    }
+  } catch (err) {
     modelStatus.textContent = "Model: file not valid JSON";
     MODEL = null;
   }
 });
 
-/* ----------------- Rule set with simple rewrites ----------------- */
+// -----------------------------------------
+// 2) VERY SIMPLE RULES FOR HIGHLIGHTING
+//    (feel free to add or remove patterns)
+// -----------------------------------------
 const RULES = [
-  { word: "female engineer", hint: "Use the role without gender unless relevant.", replace: "engineer" },
-  { word: "female leader",   hint: "Use the role without gender unless relevant.", replace: "leader" },
-  { word: "girls",           hint: "Use when age matters; otherwise consider “women.”", replace: "women" },
-  { word: "guys",            hint: "Use a more inclusive word like “everyone” or “folks.”", replace: "everyone" },
-  { word: "women shouldn't", hint: "Avoid generalizations about a group.", replace: "people shouldn't" },
-  { word: "men shouldn't",   hint: "Avoid generalizations about a group.", replace: "people shouldn't" },
-  { word: "women can't",     hint: "Avoid blanket limitations by gender.", replace: "people can't" },
-  { word: "men can't",       hint: "Avoid blanket limitations by gender.", replace: "people can't" },
-  { word: "hysterical",      hint: "Loaded descriptor; try neutral language.", replace: "overwhelmed" },
-  { word: "bossy",           hint: "Loaded descriptor; try specific behavior instead.", replace: "assertive" },
-  { word: "emotional",       hint: "Loaded descriptor; be specific and fair.", replace: "passionate" }
+  { word: "female engineer", hint: "Use the role without gender unless relevant." },
+  { word: "female leader", hint: "Use the role without gender unless relevant." },
+  { word: "girls", hint: "Use when age matters; otherwise consider “women.”" },
+  { word: "guys", hint: "Use a more inclusive word like “everyone” or “folks.”" },
+  { word: "women shouldn't", hint: "Avoid generalizing about what a whole gender can do." },
+  { word: "men shouldn't", hint: "Avoid generalizing about what a whole gender can do." },
+  { word: "women can't", hint: "Avoid blanket limitations by gender." },
+  { word: "men can't", hint: "Avoid blanket limitations by gender." },
+  { word: "hysterical", hint: "Loaded descriptor; try neutral language." },
+  { word: "bossy", hint: "Loaded descriptor; try specific behavior instead." },
+  { word: "emotional", hint: "Loaded descriptor; be specific and fair." }
 ];
 
-/* --------- Highlight + collect hits + build improved text --------- */
-function analyzeWithRules(rawText){
-  let html = rawText;
-  let improved = rawText;
+// This is a super simple highlighter that just replaces matching words
+function simpleHighlight(rawText) {
+  let outputHTML = rawText;
   const hits = [];
 
-  for (let i=0;i<RULES.length;i++){
+  // We do a basic, case-insensitive find/replace
+  for (let i = 0; i < RULES.length; i++) {
     const rule = RULES[i];
     const term = rule.word;
-    const esc = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(esc, "gi");
+    const termRegex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
 
-    if (re.test(html)) {
-      // highlight in html
-      html = html.replace(re, m => `<mark>${m}</mark>`);
-    }
-    if (re.test(improved)) {
-      // simple rewrite in improved text
-      improved = improved.replace(re, rule.replace);
-      hits.push({ match: term, hint: rule.hint, replacement: rule.replace });
+    if (termRegex.test(outputHTML)) {
+      outputHTML = outputHTML.replace(termRegex, function (match) {
+        hits.push({ match: match, hint: rule.hint });
+        return '<mark>' + match + '</mark>';
+      });
     }
   }
-  return { html, improved, hits };
+
+  return { html: outputHTML, hits: hits };
 }
 
-/* ----------------- Tokenizer + simple model score ----------------- */
-function tokenize(text){
+// ------------------------------------------------------
+// 3) SIMPLE TOKENIZER so we can score with the tiny model
+// ------------------------------------------------------
+function tokenize(text) {
+  // very basic: lowercase, replace non-letters with spaces, split
   const lowered = text.toLowerCase();
   const clean = lowered.replace(/[^a-z0-9\s]/g, " ");
-  return clean.split(/\s+/).filter(Boolean);
+  const parts = clean.split(/\s+/).filter(Boolean);
+  return parts;
 }
-function bigrams(tokens){
-  const out=[]; for(let i=0;i<tokens.length-1;i++) out.push(tokens[i]+" "+tokens[i+1]); return out;
+
+function makeBigrams(tokens) {
+  const grams = [];
+  for (let i = 0; i < tokens.length - 1; i++) {
+    grams.push(tokens[i] + " " + tokens[i + 1]);
+  }
+  return grams;
 }
-function modelProbability(text){
-  if(!MODEL) return null;
-  const vocab = MODEL.vocab, idf = MODEL.idf, coef = MODEL.coef, b = MODEL.intercept||0;
-  const one = tokenize(text), two = bigrams(one);
+
+// ---------------------------------------------------------
+// 4) SIMPLE MODEL PROBABILITY (TF * IDF + logistic weights)
+//    This is not fancy. It’s just a straightforward dot product.
+// ---------------------------------------------------------
+function modelProbability(text) {
+  if (!MODEL) return null;
+
+  const vocab = MODEL.vocab;   // { token: index }
+  const idf = MODEL.idf;       // [idf per index]
+  const coef = MODEL.coef;     // [weight per index]
+  const b = MODEL.intercept || 0;
+
+  // Get tokens and bigrams
+  const one = tokenize(text);
+  const two = makeBigrams(one);
+
+  // Count terms that are in the vocab (raw counts only, super simple)
+  const counts = {}; // token -> count
   const all = one.concat(two);
-  const counts = {};
-  for(let i=0;i<all.length;i++){
+  for (let i = 0; i < all.length; i++) {
     const t = all[i];
-    if(Object.prototype.hasOwnProperty.call(vocab,t)) counts[t]=(counts[t]||0)+1;
+    if (vocab.hasOwnProperty(t)) {
+      counts[t] = (counts[t] || 0) + 1;
+    }
   }
-  let z=b;
-  for(const t in counts){
-    const idx=vocab[t];
-    const tfidf = counts[t]*idf[idx];
-    z += coef[idx]*tfidf;
+
+  // Dot product: sum( (count * idf[idx]) * coef[idx] ) + intercept
+  let z = b;
+  for (const t in counts) {
+    const idx = vocab[t];
+    const tfidf = counts[t] * idf[idx]; // no normalization to keep code simple
+    z += coef[idx] * tfidf;
   }
-  return 1/(1+Math.exp(-z));
+
+  // Sigmoid to map to 0..1
+  const p = 1 / (1 + Math.exp(-z));
+  return p;
 }
 
-/* ----------------- UI: Analyze, Tabs, Rewrite, Download ----------------- */
-let lastOriginalHTML = "";      // highlighted original
-let lastImprovedText = "";      // plain text after rewrites
-let showing = "original";       // which tab is active
-
-function renderPreview(){
-  if(showing==="original"){
-    previewEl.innerHTML = lastOriginalHTML || "<span class='muted'>Nothing to show.</span>";
-    tabOriginal.classList.add("active"); tabImproved.classList.remove("active");
-  } else {
-    // show improved text (plain)
-    previewEl.textContent = lastImprovedText || "No improved text yet. Click “Rewrite text”.";
-    tabImproved.classList.add("active"); tabOriginal.classList.remove("active");
-  }
-}
-
-tabOriginal.onclick = () => { showing="original"; renderPreview(); };
-tabImproved.onclick = () => { showing="improved"; renderPreview(); };
-
-analyzeBtn.addEventListener("click", function (){
+// ----------------------
+// 5) ANALYZE BUTTON
+// ----------------------
+analyzeBtn.addEventListener("click", function () {
   const text = inputEl.value || "";
 
-  // Rule analysis
-  const res = analyzeWithRules(text);
-  lastOriginalHTML = useHighlighterEl.checked ? res.html : text;
-  lastImprovedText = res.improved;
+  // Highlight (rules)
+  if (useHighlighterEl && useHighlighterEl.checked) {
+    const result = simpleHighlight(text);
+    previewEl.innerHTML = result.html || "<span class='muted'>Nothing to show.</span>";
 
-  // Suggestions list
-  if(res.hits.length===0){
-    suggestionsEl.textContent = "No flags from rules.";
+    if (result.hits.length === 0) {
+      suggestionsEl.textContent = "No flags from rules.";
+    } else {
+      // Show each hit with a small hint
+      let s = "";
+      for (let i = 0; i < result.hits.length; i++) {
+        const h = result.hits[i];
+        s += "<div class='hit'><div><strong>" + h.match + "</strong></div>" +
+             "<div class='hint'>" + h.hint + "</div></div>";
+      }
+      suggestionsEl.innerHTML = s;
+    }
   } else {
-    suggestionsEl.innerHTML = res.hits.map(h => `
-      <div class="hit">
-        <div><strong>${h.match}</strong> → <em>${h.replacement}</em></div>
-        <div class="hint">${h.hint}</div>
-      </div>
-    `).join("");
+    previewEl.textContent = text;
+    suggestionsEl.textContent = "Rule highlighter disabled.";
   }
 
-  // Model probability (on ORIGINAL text, simple)
-  if(useModelEl.checked && MODEL){
-    const p = modelProbability(text) || 0;
-    const pct = Math.round(p*100);
-    probEl.textContent = pct + "%";
-    meterEl.style.width = pct + "%";
+  // Model score
+  if (useModelEl && useModelEl.checked) {
+    if (!MODEL) {
+      probEl.textContent = "– (upload model)";
+      meterEl.style.width = "0%";
+    } else {
+      const p = modelProbability(text) || 0;
+      const pct = Math.round(p * 100);
+      probEl.textContent = pct + "%";
+      meterEl.style.width = pct + "%";
+    }
   } else {
-    probEl.textContent = "–"; meterEl.style.width="0%";
+    probEl.textContent = "–";
+    meterEl.style.width = "0%";
   }
-
-  // Default to Original tab after analyze
-  showing = "original";
-  renderPreview();
 });
 
-// One-click rewrite: replace in the editor with improved version
-rewriteBtn.addEventListener("click", function(){
-  if(!inputEl.value){ return; }
-  const res = analyzeWithRules(inputEl.value);
-  inputEl.value = res.improved;
-  lastImprovedText = res.improved;
-  showing = "improved";
-  renderPreview();
-});
-
-// Download improved version as .txt
-downloadBtn.addEventListener("click", function(){
-  const text = lastImprovedText || inputEl.value || "";
-  const blob = new Blob([text], {type:"text/plain"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "biaslite_improved.txt";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-});
