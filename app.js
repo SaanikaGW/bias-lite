@@ -60,10 +60,8 @@ modelFile.addEventListener("change", async function (e) {
   }
 });
 
-// -----------------------------------------
-// 2) VERY SIMPLE RULES FOR HIGHLIGHTING
-//    (feel free to add or remove patterns)
-// -----------------------------------------
+
+// 2) Theese are some rules for the highlighter, so far the model uses a very simple and basic set that can be further bettered.
 const RULES = [
   { word: "female engineer", hint: "Use the role without gender unless relevant." },
   { word: "female leader", hint: "Use the role without gender unless relevant." },
@@ -77,6 +75,20 @@ const RULES = [
   { word: "bossy", hint: "Loaded descriptor; try specific behavior instead." },
   { word: "emotional", hint: "Loaded descriptor; be specific and fair." }
 ];
+
+const REWRITES = {
+  "girls": "students",
+  "guys": "everyone",
+  "bossy": "assertive",
+  "emotional": "expressive",
+  "female engineer": "engineer",
+  "female leader": "leader",
+  "women shouldn't": "people shouldn't",
+  "men shouldn't": "people shouldn't",
+  "women can't": "people can't",
+  "men can't": "people can't",
+  "hysterical": "overwhelmed"
+};
 
 // This is a super simple highlighter that just replaces matching words
 function simpleHighlight(rawText) {
@@ -100,9 +112,9 @@ function simpleHighlight(rawText) {
   return { html: outputHTML, hits: hits };
 }
 
-// ------------------------------------------------------
-// 3) SIMPLE TOKENIZER so we can score with the tiny model
-// ------------------------------------------------------
+
+// 3) This is a very basic tokenizer + bigrammer
+
 function tokenize(text) {
   // very basic: lowercase, replace non-letters with spaces, split
   const lowered = text.toLowerCase();
