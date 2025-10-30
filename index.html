@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <title>Bias-Lite</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: Inter, system-ui, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(180deg, #0b0b0c, #0f1014 40%, #0b0b0c);
       color: #e9e9ee;
       display: flex;
@@ -26,13 +27,15 @@
     }
     h1 {
       margin: 0 0 12px;
-      font-size: 32px;
+      font-size: 36px;
       font-weight: 800;
+      letter-spacing: 0.5px;
     }
     p {
       margin: 0 0 24px;
-      font-size: 16px;
+      font-size: 17px;
       color: #b6b6c2;
+      line-height: 1.5;
     }
     button {
       background: #6ee7b7;
@@ -44,22 +47,26 @@
       cursor: pointer;
       font-weight: 700;
       transition: 0.15s;
+      font-family: 'Poppins', sans-serif;
     }
     button:hover {
       filter: brightness(1.1);
+      transform: scale(1.03);
     }
     .subtle {
-      font-size: 12px;
+      font-size: 13px;
       color: #9aa0aa;
-      margin-top: 14px;
+      margin-top: 16px;
+      letter-spacing: 0.3px;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Bias-Lite</h1>
-    <p>Detect gender bias in any text. Fully private. Runs in your browser.</p>
+    <p>Detect gender bias in any text. Runs entirely in your browser.</p>
     <button onclick="location.href='analyzer.html'">Start Analyzing</button>
+    <br><br>
     <button onclick="location.href='tips.html'">View Tips & Resources</button>
     <div class="subtle">Join our quest to lower gender bias!</div>
   </div>
