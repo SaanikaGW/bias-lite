@@ -24,12 +24,20 @@
       max-width: 480px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-    .screenshot {
-      width: 100%;
-      border-radius: 12px;
-      margin: 24px 0;
-      box-shadow: 0 8px 20px rgba(0,0,0,.25);
-    }
+    .corner-screenshot {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 180px;       /* adjust size */
+  border-radius: 12px;
+  opacity: 0.9;
+  border: 1px solid #2f2f33;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.corner-screenshot:hover {
+  transform: scale(1.05);
+  opacity: 1;
     h1 {
       margin: 0 0 12px;
       font-size: 32px;
