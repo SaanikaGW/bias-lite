@@ -29,20 +29,22 @@
       z-index: 10;
     }
 
-   
-    .corner-screenshot {
-      position: fixed;
-      top: 30px;         
-      right: 60px;        
-      width: 140px;
-      height: auto;
-      border-radius: 12px;
-      opacity: 0.95;
-      border: 1px solid #2f2f33;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-      z-index: 1;         
-      pointer-events: none; 
-    }
+   .corner-screenshot {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 180px;      
+    border-radius: 12px;
+    opacity: 0.9;
+    border: 1px solid #2f2f33;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .corner-screenshot:hover {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
 
     h1 {
       margin: 0 0 16px;
@@ -94,8 +96,8 @@
 </head>
 <body>
 
-  
-  <img src="laptop-screenshot.png" alt="Bias-Lite on laptop" class="corner-screenshot">
+  <body>
+  <img src="laptop-screenshot.png" alt="Bias-Lite running" class="corner-screenshot">
 
   <div class="card">
     <h1>Bias-Lite</h1>
