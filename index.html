@@ -29,19 +29,20 @@
       z-index: 10;
     }
 
-   .corner-screenshot {
-  position: absolute;
-  top: 50px;
-  right: 50px;
-  width: 180px;
+  .corner-screenshot {
+  position: fixed;            
+  top: 50%;                  
+  left: 50%;                    
+  transform: translate(-50%, -50%); 
+  width: 220px;                
   border-radius: 12px;
-  opacity: 0.9;
   border: 1px solid #2f2f33;
   box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  opacity: 0.95;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .corner-screenshot:hover {
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
   opacity: 1;
 }
 
