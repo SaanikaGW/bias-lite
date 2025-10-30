@@ -24,17 +24,23 @@
       max-width: 480px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
+
     .corner-screenshot {
-  position: absolute;
-  top: 20px;
-  right: 1px;
-  width: 1px;       /* adjust size */
-  border-radius: 12px;
-  opacity: 0.9;
-  border: 1px solid #2f2f33;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 180px;       /* adjust size */
+    border-radius: 12px;
+    opacity: 0.9;
+    border: 1px solid #2f2f33;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .corner-screenshot:hover {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+    
     h1 {
       margin: 0 0 12px;
       font-size: 32px;
@@ -73,8 +79,7 @@
     <button onclick="location.href='analyzer.html'">Start Analyzing</button>
     <button onclick="location.href='tips.html'">View Tips & Resources</button>
 
-    <img src="laptop-screenshot.png" alt="Bias-Lite on laptop" class="screenshot">
-
+   <img src="laptop-screenshot.png" alt="Bias-Lite running" class="corner-screenshot">
     <div class="subtle">Join our quest to lower gender bias!</div>
   </div>
 </body>
