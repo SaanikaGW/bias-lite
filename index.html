@@ -24,23 +24,21 @@
       text-align: center;
       max-width: 480px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      position: relative;
-      overflow: hidden;
     }
 
-  .corner-screenshot {
-  position: absolute;
-  top: -50px;      
-  right: -50px;
-  width: 90px;
-  height: auto;
-  border-radius: 10px;
-  opacity: 0.9;
-  border: 1px solid #2f2f33;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
+   
+    .corner-screenshot {
+      position: fixed;       
+      top: 20px;             
+      right: 20px;           
+      width: 110px;          
+      height: auto;
+      border-radius: 12px;
+      opacity: 0.9;
+      border: 1px solid #2f2f33;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
 
     .corner-screenshot:hover {
       transform: scale(1.05);
@@ -79,9 +77,10 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <img src="laptop-screenshot.png" alt="Bias-Lite on laptop" class="corner-screenshot">
+ 
+  <img src="laptop-screenshot.png" alt="Bias-Lite on laptop" class="corner-screenshot">
 
+  <div class="card">
     <h1>Bias-Lite</h1>
     <p>Detect gender bias in any text. Fully private. Runs in your browser.</p>
     <button onclick="location.href='analyzer.html'">Start Analyzing</button>
