@@ -44,13 +44,18 @@
         <span id="modelStatus" class="muted">Model: loading…</span>
       </div>
     </div>
-    <p class="sub">Paste text, click Analyze. All detection runs locally in your browser.</p>
+
+    <p class="sub">Paste text, click Analyze. Detection runs in your browser.</p>
 
     <div class="grid">
+      <!-- LEFT: editor + controls -->
       <div class="card">
         <textarea id="input" placeholder="Paste any paragraph or sentence here…"></textarea>
+
         <div class="row" style="margin-top:10px">
           <button id="analyzeBtn">Analyze</button>
+          <button id="downloadBtn">Download Corrected Version</button>
+
           <label class="row muted" style="gap:6px">
             <input type="checkbox" id="useModel" checked />
             Use model score
@@ -60,22 +65,31 @@
             Highlight gendered phrasing
           </label>
         </div>
-        <div class="footer">Try: “Women shouldn’t lift heavy equipment.” or “She leads the product engineering division.”</div>
+
+        <div class="footer">
+          Try: “Women shouldn’t lift heavy equipment.” or “She leads the product engineering division.”
+        </div>
       </div>
 
+      <!-- RIGHT: results -->
       <div class="card">
         <div class="row" style="justify-content:space-between">
           <div class="score">Bias probability: <span id="prob">–</span></div>
           <span class="pill" id="modelBadge">Model: not loaded</span>
         </div>
+
         <div class="bar" style="margin:10px 0 16px"><div id="meter" style="width:0%"></div></div>
+
         <div id="preview" style="min-height:140px"></div>
+
         <h4 style="margin:18px 0 6px">Suggestions</h4>
         <div id="suggestions" class="muted">No flags yet.</div>
       </div>
     </div>
 
-    <p class="footer">Disclosure: rule-based highlights plus a small TF-IDF + logistic regression model trained on a mixed dataset. All inference is on-device.</p>
+    <p class="footer">
+      Disclosure: rule-based highlights plus a small TF-IDF + logistic regression model trained on a mixed dataset.
+    </p>
   </div>
 
   <script src="app.js"></script>

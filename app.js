@@ -11,6 +11,8 @@ let MODEL = null;
 // elements
 const inputEl = document.getElementById("input");
 const analyzeBtn = document.getElementById("analyzeBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+downloadBtn.addEventListener("click", downloadCorrectedVersion);
 const previewEl = document.getElementById("preview");
 const suggestionsEl = document.getElementById("suggestions");
 const probEl = document.getElementById("prob");
@@ -197,6 +199,24 @@ analyzeBtn.addEventListener("click", function () {
     previewEl.textContent = text;
     suggestionsEl.textContent = "Rule highlighter disabled.";
   }
+
+  function downloadCorrectedVersion() {
+  if (!inputEl.value.trim()) return alert("Please enter text first!");
+
+  let correctedText = inputEl.value;
+  for (const [key, value] of Object.entries(REWRITES)) {
+    const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    correctedText = correctedText.replace(regex, value);
+  }
+
+  const blob = new Blob([correctedText], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "BiasLite_Corrected.txt";
+  link.click();
+  alert("Corrected version downloaded successfully!");
+
+}
 
   // Model score
   if (useModelEl && useModelEl.checked) {
